@@ -11,6 +11,15 @@ class _NewExpenseState extends State<NewExpense> {
   final _titleController = TextEditingController();
   final _expenseController = TextEditingController();
 
+  void _presentDatePicker (){
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1, now.month, now.day);
+    showDatePicker(
+        context: context,
+        firstDate: firstDate,
+        lastDate: now);
+  }
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -31,18 +40,39 @@ class _NewExpenseState extends State<NewExpense> {
               label: Text('Expense title: '),
             ),
           ),
-          TextField(
-            controller: _expenseController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              label: Text('Amount: '),
-              prefixText: '\$ ',
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _expenseController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    label: Text('Amount: '),
+                    prefixText: '\$ ',
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16,),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Selected date'),
+                    IconButton(
+                        onPressed: _presentDatePicker,
+                        icon: const Icon(Icons.calendar_month))
+                  ],
+                ),
+              )
+            ]
           ),
           Row(
             children: [
               ElevatedButton(
-                onPressed: () {  },
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 child: const Text('Cancel'),
               ),
               ElevatedButton(
