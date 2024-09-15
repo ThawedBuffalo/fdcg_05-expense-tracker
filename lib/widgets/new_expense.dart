@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-final formatter = DateFormat.yMd();
+import '../models/expense.dart';
 
 class NewExpense extends StatefulWidget {
   const NewExpense({super.key});
@@ -14,15 +13,16 @@ class _NewExpenseState extends State<NewExpense> {
   final _titleController = TextEditingController();
   final _expenseController = TextEditingController();
   DateTime? _selectedDate;
+  Category _selectedCategory = Category.leisure;
 
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
-    final pickededDate = await showDatePicker(
+    final pickedDate = await showDatePicker(
         context: context, firstDate: firstDate, lastDate: now);
 
     setState(() {
-      _selectedDate = pickededDate;
+      _selectedDate = pickedDate;
     });
   }
 
@@ -75,9 +75,34 @@ class _NewExpenseState extends State<NewExpense> {
               ),
             )
           ]),
+          const SizedBox(
+            height: 16,
+          ),
           Row(
             children: [
-              ElevatedButton(
+              DropdownButton(
+                  value: _selectedCategory,
+                  items: Category.values
+                      .map(
+                        (category) => DropdownMenuItem(
+                          value: category,
+                          child: Text(
+                            category.name.toUpperCase(),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    print(value);
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() {
+                      _selectedCategory = value;
+                    });
+                  }),
+              const Spacer(),
+              TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
